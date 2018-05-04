@@ -4,6 +4,69 @@ const STEP = 150;
 const HIGHLIGHT_COLOR = '#1E7DCD';
 let currentPost;
 
+// Styles
+const css = document.createElement('style');
+css.type = 'text/css';
+css.innerHTML = `
+.reddit-shortcuts-reference__wrapper {
+  z-index: 9999;
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.55);
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.reddit-shortcuts-reference {
+  width: 100%;
+  max-width: 900px;
+  height: 550px;
+  background-color: #fbfbfb;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 1px 1px 5px 0px rgba(0,0,0,0.35);
+  animation: appear .25s;
+}
+
+@keyframes appear {
+  from {
+    transform: scale(0.85);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.reddit-shortcuts-reference__header {
+  height: 70px;
+  background-color: #f9482c;
+  text-align: center;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: system-ui, sans-serif;
+  border-bottom-left-radius: 50px 30px;
+  font-size: 1.4rem;
+}
+
+.reddit-shortcuts-reference__content-wrapper {
+  height: 480px;
+  background-color: #f9482c;
+}
+
+.reddit-shortcuts-reference__content {
+  height: 100%;
+  background-color: #fbfbfb;
+  border-top-right-radius: 50px 30px;
+}
+`;
+document.body.appendChild(css);
+
 function getLightbox() {
   return document.querySelector('#lightbox');
 }
@@ -122,9 +185,32 @@ function downvoteCurrentPost() {
   downvotePost(currentPost);
 }
 
-// function showHelp() {
-//   // document.creategg
-// }
+function toggleHelp() {
+  const existing = document.querySelector('.reddit-shortcuts-reference__wrapper');
+
+  if (existing) {
+    existing.remove();
+    return;
+  }
+
+  const el = document.createElement('div');
+
+  el.classList = 'reddit-shortcuts-reference__wrapper';
+
+  el.innerHTML = `
+    <div class="reddit-shortcuts-reference">
+      <div class="reddit-shortcuts-reference__header">
+        Reddit Shortcuts
+      </div>
+      <div class="reddit-shortcuts-reference__content-wrapper">
+        <div class="reddit-shortcuts-reference__content">
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(el);
+}
 
 document.addEventListener('keyup', ({ keyCode }) => {
   const checks = [
@@ -160,6 +246,9 @@ document.addEventListener('keyup', ({ keyCode }) => {
       break;
     case 83:
       downvoteCurrentPost();
+      break;
+    case 72: // H
+      toggleHelp();
       break;
     default:
       break;
